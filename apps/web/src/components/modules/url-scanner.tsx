@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 type PostCount = 3 | 5 | 10 | 15;
 
@@ -14,6 +14,27 @@ export function UrlScanner({ workspaceId }: UrlScannerProps) {
     const [postCount, setPostCount] = useState<PostCount>(5)
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<{ success: boolean; message?: string; error?: string } | null>(null)
+
+    // Load saved settings on mount
+    useEffect(() => {
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings/modules?key=module.url_scanner')
+                const data = await res.json()
+                if (data.settings) {
+                    if (data.settings.defaultPostCount) {
+                        const count = parseInt(data.settings.defaultPostCount)
+                        if ([3, 5, 10, 15].includes(count)) {
+                            setPostCount(count as PostCount)
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load settings')
+            }
+        }
+        loadSettings()
+    }, [])
 
     const handleScan = async () => {
         if (!url) return;
@@ -132,8 +153,8 @@ export function UrlScanner({ workspaceId }: UrlScannerProps) {
                 {/* Result Message */}
                 {result && (
                     <div className={`p-3 rounded-md ${result.success
-                            ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                            : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                        ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
+                        : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
                         }`}>
                         {result.success ? result.message : result.error}
                     </div>

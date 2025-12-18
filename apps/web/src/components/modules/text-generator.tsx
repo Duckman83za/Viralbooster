@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface TextGeneratorProps {
     workspaceId: string;
@@ -12,6 +12,27 @@ export function TextGenerator({ workspaceId }: TextGeneratorProps) {
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<string[] | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [settingsLoaded, setSettingsLoaded] = useState(false)
+
+    // Load saved settings on mount
+    useEffect(() => {
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings/modules?key=module.text_viral')
+                const data = await res.json()
+                if (data.settings) {
+                    if (data.settings.defaultPlatform) {
+                        setPlatform(data.settings.defaultPlatform)
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load settings')
+            } finally {
+                setSettingsLoaded(true)
+            }
+        }
+        loadSettings()
+    }, [])
 
     const platforms = [
         { value: 'linkedin', label: 'LinkedIn', icon: '💼' },

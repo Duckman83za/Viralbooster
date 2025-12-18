@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 type Platform = 'tiktok' | 'reels' | 'youtube_shorts';
 type Tone = 'educational' | 'entertaining' | 'motivational' | 'storytelling';
@@ -40,6 +40,27 @@ export function ShortsGenerator({ workspaceId }: ShortsGeneratorProps) {
     const [loading, setLoading] = useState(false)
     const [script, setScript] = useState<GeneratedScript | null>(null)
     const [error, setError] = useState<string | null>(null)
+
+    // Load saved settings on mount
+    useEffect(() => {
+        async function loadSettings() {
+            try {
+                const res = await fetch('/api/settings/modules?key=module.shorts_generator')
+                const data = await res.json()
+                if (data.settings) {
+                    if (data.settings.defaultPlatform && ['tiktok', 'reels', 'youtube_shorts'].includes(data.settings.defaultPlatform)) {
+                        setPlatform(data.settings.defaultPlatform as Platform)
+                    }
+                    if (data.settings.defaultTone && ['educational', 'entertaining', 'motivational', 'storytelling'].includes(data.settings.defaultTone)) {
+                        setTone(data.settings.defaultTone as Tone)
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load settings')
+            }
+        }
+        loadSettings()
+    }, [])
 
     const handleGenerate = async () => {
         if (!topic.trim()) return;
@@ -130,8 +151,8 @@ export function ShortsGenerator({ workspaceId }: ShortsGeneratorProps) {
                                     key={p.value}
                                     onClick={() => setPlatform(p.value)}
                                     className={`flex-1 p-3 rounded-md border text-center transition-colors ${platform === p.value
-                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                                            : 'border-gray-200 dark:border-zinc-700 hover:border-gray-300'
+                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                                        : 'border-gray-200 dark:border-zinc-700 hover:border-gray-300'
                                         }`}
                                 >
                                     <div className="text-xl">{p.icon}</div>
@@ -152,8 +173,8 @@ export function ShortsGenerator({ workspaceId }: ShortsGeneratorProps) {
                                     key={t.value}
                                     onClick={() => setTone(t.value)}
                                     className={`p-2 rounded-md border text-sm transition-colors ${tone === t.value
-                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                                            : 'border-gray-200 dark:border-zinc-700 hover:border-gray-300'
+                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                                        : 'border-gray-200 dark:border-zinc-700 hover:border-gray-300'
                                         }`}
                                 >
                                     {t.label}
