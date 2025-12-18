@@ -13,7 +13,7 @@ const AI_PROVIDERS = {
             provider: 'gemini',
             label: 'Google Gemini',
             icon: '🔮',
-            models: ['gemini-pro', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+            models: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro'],
             helpUrl: 'https://aistudio.google.com/app/apikey',
             helpText: 'Get your API key from Google AI Studio'
         },
@@ -21,7 +21,7 @@ const AI_PROVIDERS = {
             provider: 'openai',
             label: 'OpenAI',
             icon: '🤖',
-            models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
+            models: ['gpt-4o', 'gpt-4o-mini', 'o1', 'o1-mini', 'gpt-4-turbo'],
             helpUrl: 'https://platform.openai.com/api-keys',
             helpText: 'Get your API key from OpenAI Platform'
         },
@@ -29,7 +29,7 @@ const AI_PROVIDERS = {
             provider: 'anthropic',
             label: 'Anthropic Claude',
             icon: '🧠',
-            models: ['claude-3-5-sonnet-20241022', 'claude-3-opus', 'claude-3-haiku'],
+            models: ['claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus-latest'],
             helpUrl: 'https://console.anthropic.com/settings/keys',
             helpText: 'Get your API key from Anthropic Console'
         },

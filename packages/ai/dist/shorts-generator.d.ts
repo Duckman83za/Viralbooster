@@ -3,6 +3,8 @@
  *
  * Generates 60-second video scripts for TikTok, Instagram Reels, and YouTube Shorts
  * using the proven 4-part framework: Hook → Story → 3 Tips → CTA
+ *
+ * Supports: Gemini, OpenAI (GPT-4o, o1), and Anthropic Claude
  */
 export interface ShortsScriptOptions {
     /** Main topic or theme for the video */
@@ -13,6 +15,10 @@ export interface ShortsScriptOptions {
     niche?: string;
     /** Tone of the content */
     tone?: 'educational' | 'entertaining' | 'motivational' | 'storytelling';
+    /** AI provider to use */
+    provider?: 'gemini' | 'openai' | 'anthropic';
+    /** Specific model to use */
+    model?: string;
 }
 export interface ShortsScript {
     /** Attention-grabbing hook (0-5 seconds) */

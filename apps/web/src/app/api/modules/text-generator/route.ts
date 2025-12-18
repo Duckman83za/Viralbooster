@@ -4,6 +4,8 @@ import { prisma } from '@contentos/db';
 import { checkEntitlement } from '@/lib/modules';
 import { getUserAIConfig } from '@/lib/ai-config';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 export async function POST(req: NextRequest) {
     try {
@@ -57,14 +59,8 @@ export async function POST(req: NextRequest) {
             }, { status: 400 });
         }
 
-        // 6. Generate posts using real AI
-        let posts: string[] = [];
-
-        if (aiConfig.provider === 'gemini') {
-            const genAI = new GoogleGenerativeAI(aiConfig.apiKey);
-            const model = genAI.getGenerativeModel({ model: aiConfig.model });
-
-            const systemPrompt = `You are a viral social media content expert. Generate 3 unique, engaging ${platform} posts based on the user's topic.
+        // System prompt for all providers
+        const systemPrompt = `You are a viral social media content expert. Generate 3 unique, engaging ${platform} posts based on the user's topic.
 
 Rules:
 - Each post should be optimized for ${platform}'s algorithm
@@ -76,24 +72,69 @@ Rules:
 
 Return exactly 3 posts, separated by "---" on its own line. No numbering or labels.`;
 
+        // 6. Generate posts using real AI
+        let posts: string[] = [];
+        let rawResponse = '';
+
+        if (aiConfig.provider === 'gemini') {
+            // Google Gemini
+            const genAI = new GoogleGenerativeAI(aiConfig.apiKey);
+            const model = genAI.getGenerativeModel({ model: aiConfig.model });
             const result = await model.generateContent(`${systemPrompt}\n\nTopic: ${prompt}`);
-            const response = result.response.text();
+            rawResponse = result.response.text();
 
-            // Parse the 3 posts
-            posts = response.split('---').map(p => p.trim()).filter(p => p.length > 0);
+        } else if (aiConfig.provider === 'openai') {
+            // OpenAI (GPT-4o, o1, etc.)
+            const openai = new OpenAI({ apiKey: aiConfig.apiKey });
 
-            // Ensure we have exactly 3 posts
-            while (posts.length < 3) {
-                posts.push(`[Post ${posts.length + 1} generation incomplete]`);
-            }
-            posts = posts.slice(0, 3);
+            // o1 models don't support system messages, so we handle differently
+            const isO1Model = aiConfig.model.startsWith('o1');
+
+            const completion = await openai.chat.completions.create({
+                model: aiConfig.model,
+                messages: isO1Model ? [
+                    { role: 'user', content: `${systemPrompt}\n\nTopic: ${prompt}` }
+                ] : [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: `Topic: ${prompt}` }
+                ],
+            });
+
+            rawResponse = completion.choices[0]?.message?.content || '';
+
+        } else if (aiConfig.provider === 'anthropic') {
+            // Anthropic Claude
+            const anthropic = new Anthropic({ apiKey: aiConfig.apiKey });
+
+            const message = await anthropic.messages.create({
+                model: aiConfig.model,
+                max_tokens: 2048,
+                system: systemPrompt,
+                messages: [
+                    { role: 'user', content: `Topic: ${prompt}` }
+                ],
+            });
+
+            // Extract text from content blocks
+            rawResponse = message.content
+                .filter((block): block is Anthropic.TextBlock => block.type === 'text')
+                .map(block => block.text)
+                .join('');
+
         } else {
-            // For OpenAI/Anthropic, add similar logic later
-            // For now, return a helpful error
             return NextResponse.json({
-                error: `${aiConfig.provider} integration coming soon. Please use Gemini for now.`,
+                error: `Unknown provider: ${aiConfig.provider}`,
             }, { status: 400 });
         }
+
+        // Parse the response into 3 posts
+        posts = rawResponse.split('---').map(p => p.trim()).filter(p => p.length > 0);
+
+        // Ensure we have exactly 3 posts
+        while (posts.length < 3) {
+            posts.push(`[Post ${posts.length + 1} generation incomplete]`);
+        }
+        posts = posts.slice(0, 3);
 
         // 7. Save as drafts
         for (const content of posts) {
@@ -117,8 +158,9 @@ Return exactly 3 posts, separated by "---" on its own line. No numbering or labe
 
     } catch (error) {
         console.error('[API] Text Generator error:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json(
-            { error: 'Failed to generate posts. Please check your API key.' },
+            { error: `Failed to generate posts: ${errorMessage}` },
             { status: 500 }
         );
     }

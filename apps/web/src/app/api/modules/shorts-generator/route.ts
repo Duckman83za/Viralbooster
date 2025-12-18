@@ -69,12 +69,14 @@ export async function POST(req: NextRequest) {
             }, { status: 400 });
         }
 
-        // 6. Generate script
+        // 6. Generate script with user's provider/model
         const options: ShortsScriptOptions = {
             topic,
             platform,
             niche,
             tone,
+            provider: aiConfig.provider as 'gemini' | 'openai' | 'anthropic',
+            model: aiConfig.model,
         };
 
         const script = await generateShortsScript(options, aiConfig.apiKey);

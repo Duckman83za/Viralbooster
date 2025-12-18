@@ -3,30 +3,22 @@
  *
  * Generates 60-second video scripts for TikTok, Instagram Reels, and YouTube Shorts
  * using the proven 4-part framework: Hook → Story → 3 Tips → CTA
+ *
+ * Supports: Gemini, OpenAI (GPT-4o, o1), and Anthropic Claude
  */
 import { GoogleGenerativeAI } from "@google/generative-ai";
-/**
- * Generate a viral shorts script using the 4-part framework
- */
-export async function generateShortsScript(options, apiKey) {
-    const { topic, platform, niche = '', tone = 'educational' } = options;
-    // Mock response for development
-    if (!apiKey || apiKey === 'mock-key') {
-        console.log("[AI] Mock generating shorts script for:", topic);
-        return generateMockScript(topic, platform, niche, tone);
-    }
-    try {
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        const platformNames = {
-            tiktok: 'TikTok',
-            reels: 'Instagram Reels',
-            youtube_shorts: 'YouTube Shorts'
-        };
-        const prompt = `You are a viral content expert specializing in short-form video scripts. Create a 60-second video script using this proven 4-part framework:
+import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
+const PLATFORM_NAMES = {
+    tiktok: 'TikTok',
+    reels: 'Instagram Reels',
+    youtube_shorts: 'YouTube Shorts'
+};
+function buildPrompt(topic, platform, niche, tone) {
+    return `You are a viral content expert specializing in short-form video scripts. Create a 60-second video script using this proven 4-part framework:
 
 TOPIC: ${topic}
-PLATFORM: ${platformNames[platform]}
+PLATFORM: ${PLATFORM_NAMES[platform]}
 NICHE: ${niche || 'General'}
 TONE: ${tone}
 
@@ -40,7 +32,7 @@ Generate a script with these exact sections:
 
 4. CTA (50-60 seconds): A strong call-to-action that encourages engagement (follow, like, comment, share).
 
-Also provide 5-7 relevant hashtags for ${platformNames[platform]}.
+Also provide 5-7 relevant hashtags for ${PLATFORM_NAMES[platform]}.
 
 Format your response EXACTLY like this JSON (no markdown, just raw JSON):
 {
@@ -50,25 +42,74 @@ Format your response EXACTLY like this JSON (no markdown, just raw JSON):
     "cta": "Your CTA text here",
     "hashtags": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5"]
 }`;
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text().trim();
-        // Extract JSON from response
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-            throw new Error('Failed to parse script response');
+}
+function parseScriptResponse(text, platform, niche) {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+        throw new Error('Failed to parse script response');
+    }
+    const parsed = JSON.parse(jsonMatch[0]);
+    const fullScript = `${parsed.hook}\n\n${parsed.story}\n\n${parsed.tips.map((t, i) => `${i + 1}. ${t}`).join('\n')}\n\n${parsed.cta}`;
+    return {
+        hook: parsed.hook,
+        story: parsed.story,
+        tips: parsed.tips,
+        cta: parsed.cta,
+        fullScript,
+        estimatedDuration: 60,
+        hashtags: parsed.hashtags || generateDefaultHashtags(platform, niche),
+    };
+}
+/**
+ * Generate a viral shorts script using the 4-part framework
+ */
+export async function generateShortsScript(options, apiKey) {
+    const { topic, platform, niche = '', tone = 'educational', provider = 'gemini', model } = options;
+    // Mock response for development
+    if (!apiKey || apiKey === 'mock-key') {
+        console.log("[AI] Mock generating shorts script for:", topic);
+        return generateMockScript(topic, platform, niche, tone);
+    }
+    const prompt = buildPrompt(topic, platform, niche, tone);
+    try {
+        let responseText = '';
+        if (provider === 'gemini') {
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const genModel = genAI.getGenerativeModel({ model: model || "gemini-1.5-flash" });
+            const result = await genModel.generateContent(prompt);
+            responseText = result.response.text().trim();
         }
-        const parsed = JSON.parse(jsonMatch[0]);
-        const fullScript = `${parsed.hook}\n\n${parsed.story}\n\n${parsed.tips.map((t, i) => `${i + 1}. ${t}`).join('\n')}\n\n${parsed.cta}`;
-        return {
-            hook: parsed.hook,
-            story: parsed.story,
-            tips: parsed.tips,
-            cta: parsed.cta,
-            fullScript,
-            estimatedDuration: 60,
-            hashtags: parsed.hashtags || generateDefaultHashtags(platform, niche),
-        };
+        else if (provider === 'openai') {
+            const openai = new OpenAI({ apiKey });
+            const modelName = model || 'gpt-4o-mini';
+            const isO1Model = modelName.startsWith('o1');
+            const completion = await openai.chat.completions.create({
+                model: modelName,
+                messages: isO1Model ? [
+                    { role: 'user', content: prompt }
+                ] : [
+                    { role: 'system', content: 'You are a viral content expert.' },
+                    { role: 'user', content: prompt }
+                ],
+            });
+            responseText = completion.choices[0]?.message?.content || '';
+        }
+        else if (provider === 'anthropic') {
+            const anthropic = new Anthropic({ apiKey });
+            const message = await anthropic.messages.create({
+                model: model || 'claude-3-5-sonnet-latest',
+                max_tokens: 2048,
+                system: 'You are a viral content expert specializing in short-form video scripts.',
+                messages: [
+                    { role: 'user', content: prompt }
+                ],
+            });
+            responseText = message.content
+                .filter((block) => block.type === 'text')
+                .map(block => block.text)
+                .join('');
+        }
+        return parseScriptResponse(responseText, platform, niche);
     }
     catch (error) {
         console.error("[Shorts Generator] Error:", error);
@@ -86,7 +127,6 @@ function generateMockScript(topic, platform, niche, tone) {
     ];
     const cta = `Follow for more ${niche || topic.toLowerCase()} tips! Drop a 🔥 if this helped! Save this for later and share with someone who needs it.`;
     const fullScript = `${hook}\n\n${story}\n\n1. ${tips[0]}\n2. ${tips[1]}\n3. ${tips[2]}\n\n${cta}`;
-    const hashtags = generateDefaultHashtags(platform, niche);
     return {
         hook,
         story,
@@ -94,7 +134,7 @@ function generateMockScript(topic, platform, niche, tone) {
         cta,
         fullScript,
         estimatedDuration: 60,
-        hashtags,
+        hashtags: generateDefaultHashtags(platform, niche),
     };
 }
 function generateDefaultHashtags(platform, niche) {
