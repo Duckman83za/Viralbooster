@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import { ModeToggle } from "@/components/mode-toggle"
 
 export default async function DashboardLayout({
     children,
@@ -99,21 +98,18 @@ export default async function DashboardLayout({
 
                     {/* User Section */}
                     <div className="flex-shrink-0 border-t border-gray-100 dark:border-zinc-800 p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
-                                    <span className="text-white text-sm font-semibold">
-                                        {session.user?.email?.[0].toUpperCase()}
-                                    </span>
-                                </div>
-                                <div className="flex flex-col">
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[120px]">
-                                        {session.user?.email?.split('@')[0]}
-                                    </p>
-                                    <p className="text-xs text-muted">Free Plan</p>
-                                </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+                                <span className="text-white text-sm font-semibold">
+                                    {session.user?.email?.[0].toUpperCase()}
+                                </span>
                             </div>
-                            <ModeToggle />
+                            <div className="flex flex-col">
+                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[140px]">
+                                    {session.user?.email?.split('@')[0]}
+                                </p>
+                                <p className="text-xs text-muted">Free Plan</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,7 +123,7 @@ export default async function DashboardLayout({
                     </div>
                     <h1 className="text-lg font-bold text-secondary dark:text-white">ContentOS</h1>
                 </div>
-                <ModeToggle />
+                <Link href="/dashboard/settings" className="text-2xl">⚙️</Link>
             </div>
 
             {/* Main content */}
