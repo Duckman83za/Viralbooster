@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ARTH: Magic Link Auth
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  workspaces    WorkspaceUser[]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Workspace {
+  id            String    @id @default(cuid())
+  name          String
+  slug          String    @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  users         WorkspaceUser[]
+  modules       WorkspaceModule[]
+  integrations  Integration[]
+  posts         Post[]
+  schedules     ScheduleSlot[]
+  assets        Asset[]
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model WorkspaceUser {
+  id            String    @id @default(cuid())
+  userId        String
+  workspaceId   String
+  role          Role      @default(MEMBER)
+  
+  user          User      @relation(fields: [userId], references: [id])
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@unique([userId, workspaceId])
+}
+
+// MODULES: System definition
+model Module {
+  id            String    @id @default(cuid())
+  key           String    @unique // e.g. "module.text_viral"
+  name          String
+  description   String?
+  price         Int       // In cents
+  requiresKeys  Boolean   @default(false)
+  
+  entitlements  WorkspaceModule[]
+}
+
+model WorkspaceModule {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  moduleKey     String
+  enabled       Boolean   @default(false)
+  purchasedAt   DateTime?
+  
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  module        Module    @relation(fields: [moduleKey], references: [key]) // Join on key for simplicity
+
+  @@unique([workspaceId, moduleKey])
+}
+
+// CONNECTORS: BYOK
+model Integration {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  platform      String    // facebook, x, linkedin, pinterest
+  credentials   String    // Encrypted JSON blob
+  status        String    // ACTIVE, EXPIRED, REVOKED
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@unique([workspaceId, platform])
+}
+
+// CONTENT
+enum PostStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}
+
+model Post {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  content       String?   // For text posts
+  platform      String
+  status        PostStatus @default(DRAFT)
+  scheduledAt   DateTime?
+  publishedAt   DateTime?
+  failedAt      DateTime?
+  errorReason   String?
+  
+  // Metadata for generation
+  concept       String?
+  niche         String?
+  
+  assetId       String?
+  asset         Asset?    @relation(fields: [assetId], references: [id])
+  
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Asset {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  storagePath   String    // S3 key or local path
+  publicUrl     String?
+  type          String    // IMAGE, VIDEO
+  
+  // Generation metadata
+  prompt        String?
+  provider      String?   // nanobanana_pro
+  modelId       String?
+  
+  posts         Post[]
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+}
+
+// SCHEDULER
+model ScheduleSlot {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  platform      String
+  time          DateTime
+  isFilled      Boolean   @default(false)
+  
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  
+  @@index([workspaceId, time])
+}

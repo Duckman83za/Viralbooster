@@ -1,0 +1,43 @@
+
+> web@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.0
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/11) ...
+   Generating static pages (2/11) 
+   Generating static pages (5/11) 
+   Generating static pages (8/11) 
+ ✓ Generating static pages (11/11)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    174 B           109 kB
+├ ○ /_not-found                          152 B           105 kB
+├ ƒ /api/auth/[...nextauth]              152 B           105 kB
+├ ƒ /api/modules/authority-image         152 B           105 kB
+├ ƒ /api/modules/url-scan                152 B           105 kB
+├ ƒ /api/webhooks/paddle                 152 B           105 kB
+├ ○ /auth/login                          2.91 kB         108 kB
+├ ƒ /dashboard                           152 B           105 kB
+├ ƒ /dashboard/generate                  773 B           106 kB
+├ ƒ /dashboard/integrations              152 B           105 kB
+└ ƒ /dashboard/modules                   1.16 kB         106 kB
++ First Load JS shared by all            105 kB
+  ├ chunks/855-91c9a4d4af05b61e.js       50.5 kB
+  ├ chunks/87c73c54-546c5d4e935239f9.js  52.9 kB
+  └ other shared chunks (total)          1.88 kB
+
+
+ƒ Middleware                             82.8 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

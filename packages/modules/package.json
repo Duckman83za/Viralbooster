@@ -1,0 +1,21 @@
+{
+    "name": "@contentos/modules",
+    "version": "0.1.0",
+    "exports": {
+        ".": "./src/index.ts",
+        "./url-scanner": "./src/url-scanner/index.ts",
+        "./text-viral": "./src/text-viral/index.ts",
+        "./image-viral": "./src/image-viral/index.ts"
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch"
+    },
+    "dependencies": {
+        "@contentos/ai": "0.1.0",
+        "@contentos/db": "0.1.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.9.3"
+    }
+}
