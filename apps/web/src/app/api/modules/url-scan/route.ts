@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { Queue } from 'bullmq';
 import { prisma } from '@contentos/db';
 import { checkEntitlement } from '@/lib/modules';
+import { getUserAIConfig } from '@/lib/ai-config';
 
 const connection = {
     host: process.env.REDIS_HOST || 'localhost',
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Post count must be 3, 5, 10, or 15' }, { status: 400 });
         }
 
-        // 3. Verify user has access to workspace
+        // 3. Verify user has access to workspace & get user
         const user = await prisma.user.findUnique({
             where: { email: session.user.email },
             include: {
@@ -66,12 +67,26 @@ export async function POST(req: NextRequest) {
             }, { status: 403 });
         }
 
-        // 5. Add job to queue
+        // 5. Get user's AI config (BYOK)
+        const aiConfig = await getUserAIConfig(user.id, 'module.url_scanner');
+
+        if (!aiConfig.apiKey) {
+            return NextResponse.json({
+                error: 'No API key configured. Please add your API key in Settings → URL Scanner.',
+                needsApiKey: true
+            }, { status: 400 });
+        }
+
+        // 6. Add job to queue with API key
         const job = await urlScanQueue.add('scan', {
             workspaceId,
             url,
             platform,
-            postCount
+            postCount,
+            // Pass AI config to worker
+            aiProvider: aiConfig.provider,
+            aiModel: aiConfig.model,
+            apiKey: aiConfig.apiKey,
         });
 
         return NextResponse.json({

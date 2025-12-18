@@ -13,12 +13,15 @@ export default async function DashboardLayout({
 
     const navigation = [
         { name: 'Dashboard', href: '/dashboard' },
-        { name: 'Schedule', href: '/dashboard/schedule' },
-        { name: 'Library', href: '/dashboard/library' },
-        { name: 'Generate', href: '/dashboard/generate' },
-        { name: 'Integrations', href: '/dashboard/integrations' },
         { name: 'Marketplace', href: '/dashboard/modules' },
-        { name: 'Settings', href: '/dashboard/settings' },
+        // Modules
+        { name: '✍️ Text Gen', href: '/dashboard/text-generator' },
+        { name: '🔗 URL Scanner', href: '/dashboard/url-scanner' },
+        { name: '🖼️ Images', href: '/dashboard/authority-image' },
+        { name: '🎬 Shorts', href: '/dashboard/shorts-generator' },
+        // Settings
+        { name: 'Integrations', href: '/dashboard/integrations' },
+        { name: '⚙️ Settings', href: '/dashboard/settings' },
     ]
 
     return (

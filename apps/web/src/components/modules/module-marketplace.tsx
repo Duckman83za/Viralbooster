@@ -9,18 +9,35 @@ const AVAILABLE_MODULES = [
         name: "Viral Text Generator",
         description: "Generate optimized posts for LinkedIn, X, and Facebook.",
         price: 2900,
-    },
-    {
-        key: "module.image_viral_nanobanana_pro",
-        name: "Viral Image Generator (Nano Banana Pro)",
-        description: "Create stunning visuals using Gemini Nano Banana Pro.",
-        price: 4900,
+        icon: "✍️",
     },
     {
         key: "module.url_scanner",
         name: "URL Content Scanner",
         description: "Repurpose articles and web pages into viral social posts.",
         price: 3900,
+        icon: "🔗",
+    },
+    {
+        key: "module.authority_image",
+        name: "Authority Image Generator",
+        description: "Create branded 1080x1350 quote images for Instagram & Pinterest.",
+        price: 4900,
+        icon: "🖼️",
+    },
+    {
+        key: "module.shorts_generator",
+        name: "Viral Shorts Script Generator",
+        description: "Create 60-second video scripts for TikTok, Reels & YouTube Shorts.",
+        price: 2900,
+        icon: "🎬",
+    },
+    {
+        key: "module.image_viral_nanobanana_pro",
+        name: "Viral Image Generator (AI)",
+        description: "Generate AI images using Gemini/Imagen.",
+        price: 4900,
+        icon: "🌟",
     },
 ]
 
@@ -54,7 +71,10 @@ export function ModuleMarketplace({ currentModules, workspaceId }: { currentModu
                 const isEnabled = currentModules.some(m => m.moduleKey === mod.key && m.enabled)
                 return (
                     <div key={mod.key} className="border rounded-lg p-6 shadow-sm bg-white dark:bg-zinc-900 dark:border-zinc-800">
-                        <h3 className="text-lg font-medium text-black dark:text-white">{mod.name}</h3>
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">{mod.icon}</span>
+                            <h3 className="text-lg font-medium text-black dark:text-white">{mod.name}</h3>
+                        </div>
                         <p className="text-gray-700 dark:text-zinc-400 mt-2 text-sm">{mod.description}</p>
                         <div className="mt-4 flex items-center justify-between">
                             <span className="text-xl font-bold text-black dark:text-white">${(mod.price / 100).toFixed(2)}</span>

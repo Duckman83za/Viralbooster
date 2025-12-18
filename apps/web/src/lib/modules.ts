@@ -6,18 +6,35 @@ export const AVAILABLE_MODULES = [
         name: "Viral Text Generator",
         description: "Generate optimized posts for LinkedIn, X, and Facebook.",
         price: 2900, // $29.00
-    },
-    {
-        key: "module.image_viral_nanobanana_pro",
-        name: "Viral Image Generator (Nano Banana Pro)",
-        description: "Create stunning visuals using Gemini Nano Banana Pro.",
-        price: 4900, // $49.00
+        icon: "✍️",
     },
     {
         key: "module.url_scanner",
         name: "URL Content Scanner",
         description: "Repurpose articles and web pages into viral social posts.",
         price: 3900, // $39.00
+        icon: "🔗",
+    },
+    {
+        key: "module.authority_image",
+        name: "Authority Image Generator",
+        description: "Create branded 1080x1350 quote images for Instagram & Pinterest.",
+        price: 4900, // $49.00
+        icon: "🖼️",
+    },
+    {
+        key: "module.shorts_generator",
+        name: "Viral Shorts Script Generator",
+        description: "Create 60-second video scripts for TikTok, Reels & YouTube Shorts.",
+        price: 2900, // $29.00
+        icon: "🎬",
+    },
+    {
+        key: "module.image_viral_nanobanana_pro",
+        name: "Viral Image Generator (AI)",
+        description: "Generate AI images using Gemini/Imagen.",
+        price: 4900, // $49.00
+        icon: "🌟",
     },
 ]
 

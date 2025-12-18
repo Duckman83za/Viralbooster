@@ -19,7 +19,38 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
-  workspaces    WorkspaceUser[]
+  workspaces      WorkspaceUser[]
+  apiKeys         UserApiKey[]
+  moduleSettings  UserModuleSettings[]
+}
+
+// BYOK: Per-user API keys
+model UserApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  provider    String   // gemini, openai, anthropic
+  apiKey      String   // Encrypted API key
+  label       String?  // User-friendly name
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, provider])
+}
+
+// Per-user module settings
+model UserModuleSettings {
+  id          String   @id @default(cuid())
+  userId      String
+  moduleKey   String
+  settings    Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, moduleKey])
 }
 
 model Account {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@contentos/db';
 import { checkEntitlement } from '@/lib/modules';
+import { getUserAIConfig } from '@/lib/ai-config';
 import { generateShortsScript, type ShortsScriptOptions } from '@contentos/ai';
 
 export async function POST(req: NextRequest) {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Invalid platform' }, { status: 400 });
         }
 
-        // 3. Verify workspace access
+        // 3. Verify workspace access & get user
         const user = await prisma.user.findUnique({
             where: { email: session.user.email },
             include: {
@@ -58,25 +59,17 @@ export async function POST(req: NextRequest) {
             }, { status: 403 });
         }
 
-        // 5. Get API key (BYOK)
-        const integration = await prisma.integration.findFirst({
-            where: {
-                workspaceId,
-                platform: 'gemini'
-            }
-        });
+        // 5. Get user's AI config for this module (BYOK)
+        const aiConfig = await getUserAIConfig(user.id, 'module.shorts_generator');
 
-        let apiKey = 'mock-key';
-        if (integration?.credentials) {
-            try {
-                const parsed = JSON.parse(integration.credentials);
-                apiKey = parsed.apiKey || parsed.data || 'mock-key';
-            } catch {
-                console.log('[API] Could not parse credentials, using mock key');
-            }
+        if (!aiConfig.apiKey) {
+            return NextResponse.json({
+                error: 'No API key configured. Please add your API key in Settings → Shorts Generator.',
+                needsApiKey: true
+            }, { status: 400 });
         }
 
-        // 6. Generate script (synchronous as it's fast)
+        // 6. Generate script
         const options: ShortsScriptOptions = {
             topic,
             platform,
@@ -84,7 +77,7 @@ export async function POST(req: NextRequest) {
             tone,
         };
 
-        const script = await generateShortsScript(options, apiKey);
+        const script = await generateShortsScript(options, aiConfig.apiKey);
 
         // 7. Save as draft post
         const post = await prisma.post.create({
@@ -101,6 +94,8 @@ export async function POST(req: NextRequest) {
             success: true,
             postId: post.id,
             script,
+            provider: aiConfig.provider,
+            model: aiConfig.model,
         });
 
     } catch (error) {
