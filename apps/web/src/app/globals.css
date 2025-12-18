@@ -1,18 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Design System Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  /* Colors */
+  --primary: #ff3300;
+  --primary-light: #ff5533;
+  --primary-dark: #e62e00;
+  --secondary: #292929;
+  --background: #F9FAFB;
+  --foreground: #111827;
+  --muted: #6B7280;
+  --muted-foreground: #9CA3AF;
+  --border: #E5E7EB;
+  --card: #FFFFFF;
+  --card-foreground: #111827;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .dark {
+  --primary: #ff4422;
+  --primary-light: #ff6644;
+  --primary-dark: #e62e00;
+  --secondary: #1a1a1a;
   --background: #0a0a0a;
-  --foreground: #ededed;
+  --foreground: #F9FAFB;
+  --muted: #9CA3AF;
+  --muted-foreground: #6B7280;
+  --border: #27272a;
+  --card: #18181b;
+  --card-foreground: #F9FAFB;
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+/* Utility Classes */
+@layer utilities {
+
+  /* Hero Typography */
+  .text-hero {
+    @apply text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight;
+    line-height: 1.1;
+  }
+
+  .text-subheading {
+    @apply text-xl md:text-2xl font-normal;
+    line-height: 1.4;
+  }
+
+  /* Gradient Backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  }
+
+  .gradient-cta {
+    background: linear-gradient(135deg, #ff3300 0%, #ff6633 50%, #ff3300 100%);
+    background-size: 200% 100%;
+    transition: background-position 0.3s ease;
+  }
+
+  .gradient-cta:hover {
+    background-position: 100% 0;
+  }
+
+  /* Card Styles */
+  .card-modern {
+    @apply bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800;
+    box-shadow: var(--shadow);
+  }
+
+  .card-modern:hover {
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.2s ease;
+  }
+
+  /* Button Base */
+  .btn-primary {
+    @apply px-6 py-3 font-semibold text-white rounded-xl transition-all duration-200;
+    background: linear-gradient(135deg, #ff3300 0%, #ff5533 100%);
+    box-shadow: 0 4px 14px rgba(255, 51, 0, 0.25);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255, 51, 0, 0.35);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 font-semibold rounded-xl transition-all duration-200 border-2;
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  /* Input Styles */
+  .input-modern {
+    @apply w-full px-4 py-3 rounded-xl border transition-all duration-200;
+    border-color: var(--border);
+    background: var(--card);
+  }
+
+  .input-modern:focus {
+    @apply outline-none ring-2;
+    ring-color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  /* Section Spacing */
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32 px-4 md:px-8;
+  }
+
+  /* Container */
+  .container-modern {
+    @apply max-w-7xl mx-auto px-4 md:px-8;
+  }
+}
+
+/* Smooth Transitions */
+a,
+button {
+  transition: all 0.2s ease;
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 51, 0, 0.2);
+  color: var(--foreground);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
 }

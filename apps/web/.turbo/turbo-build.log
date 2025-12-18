@@ -32,13 +32,13 @@ Route (app)                              Size     First Load JS
 ├ ○ /auth/login                          2.91 kB         108 kB
 ├ ƒ /dashboard                           161 B           105 kB
 ├ ƒ /dashboard/authority-image           2.38 kB         108 kB
-├ ƒ /dashboard/generate                  2.92 kB         111 kB
+├ ƒ /dashboard/generate                  3.04 kB         111 kB
 ├ ƒ /dashboard/integrations              161 B           105 kB
-├ ƒ /dashboard/modules                   1.35 kB         107 kB
+├ ƒ /dashboard/modules                   1.69 kB         107 kB
 ├ ƒ /dashboard/settings                  3.36 kB         109 kB
 ├ ƒ /dashboard/shorts-generator          169 B           108 kB
-├ ƒ /dashboard/text-generator            1.89 kB         107 kB
-└ ƒ /dashboard/url-scanner               1.57 kB         107 kB
+├ ƒ /dashboard/text-generator            2.07 kB         107 kB
+└ ƒ /dashboard/url-scanner               1.69 kB         107 kB
 + First Load JS shared by all            105 kB
   ├ chunks/855-f20e9ec674aba0a1.js       50.5 kB
   ├ chunks/87c73c54-546c5d4e935239f9.js  52.9 kB
