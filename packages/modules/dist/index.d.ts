@@ -15,3 +15,4 @@ export { default as urlScannerModule } from './url-scanner';
 export { default as textViralModule } from './text-viral';
 export { default as imageViralModule } from './image-viral';
 export { default as authorityImageModule } from './authority-image';
+export { default as shortsGeneratorModule } from './shorts-generator';

@@ -12,6 +12,7 @@ import urlScannerModule from './url-scanner';
 import textViralModule from './text-viral';
 import imageViralModule from './image-viral';
 import authorityImageModule from './authority-image';
+import shortsGeneratorModule from './shorts-generator';
 import type { ModuleConfig, ModuleDefinition } from './types';
 
 // Registry of all available modules
@@ -22,6 +23,7 @@ export const ALL_MODULES: ModuleDefinition<any, any>[] = [
     textViralModule,
     imageViralModule,
     authorityImageModule,
+    shortsGeneratorModule,
     urlScannerModule,
 ];
 
@@ -52,3 +54,4 @@ export { default as urlScannerModule } from './url-scanner';
 export { default as textViralModule } from './text-viral';
 export { default as imageViralModule } from './image-viral';
 export { default as authorityImageModule } from './authority-image';
+export { default as shortsGeneratorModule } from './shorts-generator';
