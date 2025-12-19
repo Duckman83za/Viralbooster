@@ -13,6 +13,7 @@ export default async function DashboardLayout({
     const navigation = [
         { name: 'Dashboard', href: '/dashboard', icon: '📊' },
         { name: 'Drafts', href: '/dashboard/drafts', icon: '📋' },
+        { name: 'Library', href: '/dashboard/library', icon: '📚' },
         { name: 'Marketplace', href: '/dashboard/modules', icon: '🛒' },
     ]
 

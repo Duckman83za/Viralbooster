@@ -8,6 +8,7 @@ interface Post {
     platform: string
     status: string
     concept: string | null
+    saved: boolean
     createdAt: string
 }
 
@@ -127,6 +128,19 @@ export function DraftsClient({ workspaceId }: { workspaceId: string }) {
         navigator.clipboard.writeText(content)
     }
 
+    const handleSaveToLibrary = async (postId: string, currentlySaved: boolean) => {
+        try {
+            await fetch('/api/library', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ postId, saved: !currentlySaved }),
+            })
+            fetchPosts(pagination?.page || 1)
+        } catch (error) {
+            console.error('Failed to save to library:', error)
+        }
+    }
+
     return (
         <div className="max-w-5xl mx-auto">
             {/* Header */}
@@ -198,8 +212,8 @@ export function DraftsClient({ workspaceId }: { workspaceId: string }) {
                                         {post.platform.replace('_', ' ')}
                                     </span>
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${post.status === 'DRAFT' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
-                                            post.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                                                'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300'
+                                        post.status === 'PUBLISHED' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                                            'bg-gray-100 text-gray-700 dark:bg-zinc-700 dark:text-zinc-300'
                                         }`}>
                                         {post.status}
                                     </span>
@@ -253,6 +267,15 @@ export function DraftsClient({ workspaceId }: { workspaceId: string }) {
                                                 className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-zinc-300 hover:text-primary dark:hover:text-primary transition-colors"
                                             >
                                                 ✏️ Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleSaveToLibrary(post.id, post.saved)}
+                                                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${post.saved
+                                                        ? 'text-amber-500 hover:text-amber-600'
+                                                        : 'text-gray-700 dark:text-zinc-300 hover:text-amber-500'
+                                                    }`}
+                                            >
+                                                {post.saved ? '⭐ Saved' : '☆ Save'}
                                             </button>
                                             <div className="flex-1" />
                                             <button

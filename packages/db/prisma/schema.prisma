@@ -186,6 +186,10 @@ model Post {
   concept       String?
   niche         String?
   
+  // Library feature
+  saved         Boolean   @default(false)
+  savedAt       DateTime?
+  
   assetId       String?
   asset         Asset?    @relation(fields: [assetId], references: [id])
   
