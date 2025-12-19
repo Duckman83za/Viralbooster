@@ -10,35 +10,39 @@
    Skipping validation of types
    Skipping linting
    Collecting page data ...
-   Generating static pages (0/24) ...
-   Generating static pages (6/24) 
-   Generating static pages (12/24) 
-   Generating static pages (18/24) 
- ✓ Generating static pages (24/24)
+   Generating static pages (0/28) ...
+   Generating static pages (7/28) 
+   Generating static pages (14/28) 
+   Generating static pages (21/28) 
+ ✓ Generating static pages (28/28)
    Finalizing page optimization ...
    Collecting build traces ...
 
 Route (app)                              Size     First Load JS
 ┌ ○ /                                    180 B           109 kB
-├ ○ /_not-found                          163 B           105 kB
-├ ƒ /api/auth/[...nextauth]              163 B           105 kB
-├ ƒ /api/drafts                          163 B           105 kB
-├ ƒ /api/library                         163 B           105 kB
-├ ƒ /api/modules/authority-image         163 B           105 kB
-├ ƒ /api/modules/shorts-generator        163 B           105 kB
-├ ƒ /api/modules/text-generator          163 B           105 kB
-├ ƒ /api/modules/url-scan                163 B           105 kB
-├ ƒ /api/settings/api-keys               163 B           105 kB
-├ ƒ /api/settings/modules                163 B           105 kB
-├ ƒ /api/webhooks/paddle                 163 B           105 kB
+├ ○ /_not-found                          167 B           105 kB
+├ ƒ /api/auth/[...nextauth]              167 B           105 kB
+├ ƒ /api/brand-voices                    167 B           105 kB
+├ ƒ /api/calendar                        167 B           105 kB
+├ ƒ /api/drafts                          167 B           105 kB
+├ ƒ /api/library                         167 B           105 kB
+├ ƒ /api/modules/authority-image         167 B           105 kB
+├ ƒ /api/modules/shorts-generator        167 B           105 kB
+├ ƒ /api/modules/text-generator          167 B           105 kB
+├ ƒ /api/modules/url-scan                167 B           105 kB
+├ ƒ /api/settings/api-keys               167 B           105 kB
+├ ƒ /api/settings/modules                167 B           105 kB
+├ ƒ /api/webhooks/paddle                 167 B           105 kB
 ├ ○ /auth/login                          2.91 kB         108 kB
 ├ ƒ /dashboard                           180 B           109 kB
 ├ ƒ /dashboard/authority-image           2.4 kB          108 kB
+├ ƒ /dashboard/brand-voice               2.84 kB         108 kB
+├ ƒ /dashboard/calendar                  2.68 kB         108 kB
 ├ ƒ /dashboard/drafts                    2.49 kB         108 kB
 ├ ƒ /dashboard/generate                  3.22 kB         111 kB
-├ ƒ /dashboard/integrations              163 B           105 kB
+├ ƒ /dashboard/integrations              167 B           105 kB
 ├ ƒ /dashboard/library                   2.08 kB         107 kB
-├ ƒ /dashboard/modules                   1.69 kB         107 kB
+├ ƒ /dashboard/modules                   1.75 kB         107 kB
 ├ ƒ /dashboard/settings                  5.43 kB         111 kB
 ├ ƒ /dashboard/shorts-generator          169 B           108 kB
 ├ ƒ /dashboard/text-generator            2.07 kB         107 kB

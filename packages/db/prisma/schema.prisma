@@ -101,6 +101,7 @@ model Workspace {
   posts         Post[]
   schedules     ScheduleSlot[]
   assets        Asset[]
+  brandVoices   BrandVoice[]
 }
 
 enum Role {
@@ -190,9 +191,36 @@ model Post {
   saved         Boolean   @default(false)
   savedAt       DateTime?
   
+  // Calendar scheduling
+  scheduledFor  DateTime?
+  
+  // Brand Voice
+  brandVoiceId  String?
+  brandVoice    BrandVoice? @relation(fields: [brandVoiceId], references: [id])
+  
   assetId       String?
   asset         Asset?    @relation(fields: [assetId], references: [id])
   
+  workspace     Workspace @relation(fields: [workspaceId], references: [id])
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Brand Voice Profiles
+model BrandVoice {
+  id            String    @id @default(cuid())
+  workspaceId   String
+  name          String
+  tone          String    // professional, casual, humorous, inspiring
+  style         String?   // writing style notes
+  audience      String?   // target audience description
+  keywords      String[]  // words to include
+  avoidWords    String[]  // words to avoid
+  examples      String?   // example content
+  isDefault     Boolean   @default(false)
+  
+  posts         Post[]
   workspace     Workspace @relation(fields: [workspaceId], references: [id])
   
   createdAt     DateTime  @default(now())

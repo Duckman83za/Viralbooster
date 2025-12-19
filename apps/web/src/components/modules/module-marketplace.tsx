@@ -36,6 +36,14 @@ const AVAILABLE_MODULES = [
         gradient: "from-pink-500 to-rose-600",
     },
     {
+        key: "module.brand_voice",
+        name: "Brand Voice Profiles",
+        description: "Create custom voice profiles for consistent brand identity.",
+        price: 3900,
+        icon: "🎨",
+        gradient: "from-violet-500 to-purple-600",
+    },
+    {
         key: "module.image_viral_nanobanana_pro",
         name: "Viral Image Generator (AI)",
         description: "Generate AI images using Gemini/Imagen.",
