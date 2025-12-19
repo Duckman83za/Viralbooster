@@ -10,18 +10,19 @@
    Skipping validation of types
    Skipping linting
    Collecting page data ...
-   Generating static pages (0/20) ...
-   Generating static pages (5/20) 
-   Generating static pages (10/20) 
-   Generating static pages (15/20) 
- ✓ Generating static pages (20/20)
+   Generating static pages (0/22) ...
+   Generating static pages (5/22) 
+   Generating static pages (10/22) 
+   Generating static pages (16/22) 
+ ✓ Generating static pages (22/22)
    Finalizing page optimization ...
    Collecting build traces ...
 
 Route (app)                              Size     First Load JS
-┌ ○ /                                    177 B           109 kB
+┌ ○ /                                    180 B           109 kB
 ├ ○ /_not-found                          161 B           105 kB
 ├ ƒ /api/auth/[...nextauth]              161 B           105 kB
+├ ƒ /api/drafts                          161 B           105 kB
 ├ ƒ /api/modules/authority-image         161 B           105 kB
 ├ ƒ /api/modules/shorts-generator        161 B           105 kB
 ├ ƒ /api/modules/text-generator          161 B           105 kB
@@ -30,8 +31,9 @@ Route (app)                              Size     First Load JS
 ├ ƒ /api/settings/modules                161 B           105 kB
 ├ ƒ /api/webhooks/paddle                 161 B           105 kB
 ├ ○ /auth/login                          2.91 kB         108 kB
-├ ƒ /dashboard                           161 B           105 kB
+├ ƒ /dashboard                           180 B           109 kB
 ├ ƒ /dashboard/authority-image           2.4 kB          108 kB
+├ ƒ /dashboard/drafts                    2.38 kB         108 kB
 ├ ƒ /dashboard/generate                  3.22 kB         111 kB
 ├ ƒ /dashboard/integrations              161 B           105 kB
 ├ ƒ /dashboard/modules                   1.69 kB         107 kB
