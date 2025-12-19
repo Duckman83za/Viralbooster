@@ -65,69 +65,87 @@ export function UrlScanner({ workspaceId }: UrlScannerProps) {
     }
 
     const platforms = [
-        { value: 'linkedin', label: 'LinkedIn' },
-        { value: 'twitter', label: 'Twitter/X' },
-        { value: 'facebook', label: 'Facebook' },
-        { value: 'instagram', label: 'Instagram' }
+        { value: 'linkedin', label: 'LinkedIn', icon: '💼' },
+        { value: 'twitter', label: 'Twitter/X', icon: '🐦' },
+        { value: 'facebook', label: 'Facebook', icon: '👥' },
+        { value: 'instagram', label: 'Instagram', icon: '📷' }
     ]
 
     const postCounts: PostCount[] = [3, 5, 10, 15]
 
     return (
-        <div className="border rounded-lg p-6 bg-white dark:bg-zinc-900 dark:border-zinc-800">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4">
-                🔗 URL Content Scanner
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4">
-                Paste any article or blog URL to generate viral social posts from its content.
-            </p>
+        <div className="bg-white dark:bg-[#18181b] rounded-2xl border border-gray-200 dark:border-zinc-800 shadow-soft overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-6 py-5">
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <span className="text-2xl">🔗</span>
+                    URL Content Scanner
+                </h3>
+                <p className="text-green-100 text-sm mt-1">
+                    Transform any article into viral social posts
+                </p>
+            </div>
 
-            <div className="space-y-4">
+            <div className="p-6 space-y-5">
                 {/* URL Input */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
-                        Article URL
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        Article URL *
                     </label>
-                    <input
-                        type="url"
-                        value={url}
-                        onChange={(e) => setUrl(e.target.value)}
-                        placeholder="https://example.com/article"
-                        className="w-full px-3 py-2 border rounded-md dark:bg-zinc-800 dark:border-zinc-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted">🔗</span>
+                        <input
+                            type="url"
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
+                            placeholder="https://example.com/blog-post"
+                            className="input-modern pl-10"
+                        />
+                    </div>
                 </div>
 
-                {/* Platform Select */}
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
-                            Platform
-                        </label>
-                        <select
-                            value={platform}
-                            onChange={(e) => setPlatform(e.target.value)}
-                            className="w-full px-3 py-2 border rounded-md dark:bg-zinc-800 dark:border-zinc-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            {platforms.map(p => (
-                                <option key={p.value} value={p.value}>{p.label}</option>
-                            ))}
-                        </select>
+                {/* Platform Selection */}
+                <div>
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                        Platform
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {platforms.map(p => (
+                            <button
+                                key={p.value}
+                                onClick={() => setPlatform(p.value)}
+                                className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${platform === p.value
+                                        ? 'border-primary bg-primary/5 dark:bg-primary/10'
+                                        : 'border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600'
+                                    }`}
+                            >
+                                <div className="text-xl mb-1">{p.icon}</div>
+                                <div className={`text-xs font-medium ${platform === p.value ? 'text-primary' : 'text-gray-600 dark:text-zinc-400'}`}>
+                                    {p.label}
+                                </div>
+                            </button>
+                        ))}
                     </div>
+                </div>
 
-                    {/* Post Count Select */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
-                            Number of Posts
-                        </label>
-                        <select
-                            value={postCount}
-                            onChange={(e) => setPostCount(parseInt(e.target.value) as PostCount)}
-                            className="w-full px-3 py-2 border rounded-md dark:bg-zinc-800 dark:border-zinc-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            {postCounts.map(count => (
-                                <option key={count} value={count}>{count} posts</option>
-                            ))}
-                        </select>
+                {/* Post Count */}
+                <div>
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                        Number of Posts
+                    </label>
+                    <div className="flex gap-3">
+                        {postCounts.map(count => (
+                            <button
+                                key={count}
+                                onClick={() => setPostCount(count)}
+                                className={`flex-1 py-3 rounded-xl border-2 text-center font-medium transition-all duration-200 ${postCount === count
+                                        ? 'border-primary bg-primary/5 dark:bg-primary/10 text-primary'
+                                        : 'border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-zinc-400 hover:border-gray-300'
+                                    }`}
+                            >
+                                {count}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
@@ -135,15 +153,15 @@ export function UrlScanner({ workspaceId }: UrlScannerProps) {
                 <button
                     onClick={handleScan}
                     disabled={loading || !url}
-                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full btn-primary py-4 rounded-xl text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? (
                         <span className="flex items-center justify-center gap-2">
-                            <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                             </svg>
-                            Scanning...
+                            Scanning & Generating...
                         </span>
                     ) : (
                         '🚀 Scan & Generate Posts'
@@ -152,11 +170,14 @@ export function UrlScanner({ workspaceId }: UrlScannerProps) {
 
                 {/* Result Message */}
                 {result && (
-                    <div className={`p-3 rounded-md ${result.success
-                        ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
-                        : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+                    <div className={`p-4 rounded-xl border ${result.success
+                            ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400'
+                            : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400'
                         }`}>
-                        {result.success ? result.message : result.error}
+                        <div className="flex items-center gap-2">
+                            <span>{result.success ? '✅' : '❌'}</span>
+                            {result.success ? result.message : result.error}
+                        </div>
                     </div>
                 )}
             </div>
